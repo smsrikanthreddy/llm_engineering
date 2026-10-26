@@ -11,11 +11,13 @@ from tenacity import retry, wait_exponential
 
 load_dotenv(override=True)
 
-MODEL = "openai/gpt-4.1-nano"
+#MODEL = "openai/gpt-4.1-nano"
+MODEL = "llama3.2"
 
 DB_NAME = str(Path(__file__).parent.parent / "preprocessed_db")
 collection_name = "docs"
-embedding_model = "text-embedding-3-large"
+#embedding_model = "text-embedding-3-large"
+embedding_model = "all-MiniLM-L6-v2"
 KNOWLEDGE_BASE_PATH = Path(__file__).parent.parent / "knowledge-base"
 AVERAGE_CHUNK_SIZE = 100
 wait = wait_exponential(multiplier=1, min=10, max=240)
@@ -128,6 +130,7 @@ def create_embeddings(chunks):
 
     texts = [chunk.page_content for chunk in chunks]
     emb = openai.embeddings.create(model=embedding_model, input=texts).data
+    
     vectors = [e.embedding for e in emb]
 
     collection = chroma.get_or_create_collection(collection_name)
